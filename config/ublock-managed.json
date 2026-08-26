@@ -5,10 +5,20 @@
   "data": {
     "toOverwrite": {
       "filters": [
-        "! kids-control: block the Shorts player data — works even when navigating inside the YouTube app",
+        "! kids-control: block the Shorts player data (works even for in-app navigation)",
         "||youtube.com/youtubei/v1/reel/*",
         "||youtube.com/shorts/$document",
-        "! kids-control: hide every Shorts entry point",
+        "! kids-control: generic safety net — hide ANY link to a Short, whatever its container",
+        "www.youtube.com##a[href^=\"/shorts/\"]",
+        "www.youtube.com##a[href*=\"youtube.com/shorts/\"]",
+        "m.youtube.com##a[href^=\"/shorts/\"]",
+        "! kids-control: current-generation YouTube components (view models)",
+        "www.youtube.com##ytm-shorts-lockup-view-model",
+        "www.youtube.com##ytm-shorts-lockup-view-model-v2",
+        "www.youtube.com##grid-shelf-view-model:has(a[href^=\"/shorts/\"])",
+        "www.youtube.com##yt-lockup-view-model:has(a[href^=\"/shorts/\"])",
+        "www.youtube.com##yt-chip-cloud-chip-renderer:has-text(/^Shorts$/)",
+        "! kids-control: previous-generation components (still used on some pages)",
         "www.youtube.com##ytd-reel-shelf-renderer",
         "www.youtube.com##ytd-rich-shelf-renderer[is-shorts]",
         "www.youtube.com##ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])",
