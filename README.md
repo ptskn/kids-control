@@ -58,17 +58,19 @@ Manage everything from your own computer, over SSH — edit the blocklists and a
 
 ```bash
 python3 manager.py parent@child-pc      # opens http://127.0.0.1:8800
+# the host is remembered (and changeable in the UI) — next runs: python3 manager.py
 ```
 
 Run it from a clone of this repo on your own computer (Python standard library only — no
 dependencies). The UI is served on 127.0.0.1 only and talks to the child's computer through
 your ssh key. It shows the live status (deployed filter count, hosts entries, Firefox
-running or not, last apply), lets you edit the three blocklists, and re-applies everything
-in one click. One-time setup on the child's computer for one-click Apply:
+running or not, last apply), lets you edit the three blocklists, manages **screen time**
+(Timekpr: per-day limits, allowed hours, one-off bonus time — applied instantly), and
+re-applies everything in one click. One-time setup on the child's computer for one-click Apply:
 
 ```bash
 sudo chown -R $USER /opt/kids-control/config
-echo "$USER ALL=(root) NOPASSWD: /opt/kids-control/install.sh" | sudo tee /etc/sudoers.d/kids-control
+echo "$USER ALL=(root) NOPASSWD: /opt/kids-control/install.sh, /usr/bin/timekpra" | sudo tee /etc/sudoers.d/kids-control
 ```
 
 ## Screen time

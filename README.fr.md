@@ -54,17 +54,19 @@ Tout gérer depuis votre propre PC, via SSH — éditer les listes et appliquer 
 
 ```bash
 python3 manager.py parent@pc-enfant     # ouvre http://127.0.0.1:8800
+# l'hôte est mémorisé (et modifiable dans l'UI) — lancements suivants : python3 manager.py
 ```
 
 À lancer depuis un clone de ce dépôt sur votre propre PC (bibliothèque standard Python
 uniquement — aucune dépendance). L'interface est servie sur 127.0.0.1 seulement et parle au
 PC de l'enfant via votre clé ssh. Elle affiche l'état en direct (filtres déployés, entrées
-hosts, Firefox lancé ou non, dernier apply), permet d'éditer les trois listes, et ré-applique
-tout en un clic. Mise en place unique sur le PC de l'enfant pour l'« Apply » en un clic :
+hosts, Firefox lancé ou non, dernier apply), permet d'éditer les trois listes, gère le **temps d'écran**
+(Timekpr : limites par jour, plages horaires, bonus ponctuel — appliqués immédiatement), et
+ré-applique tout en un clic. Mise en place unique sur le PC de l'enfant pour l'« Apply » en un clic :
 
 ```bash
 sudo chown -R $USER /opt/kids-control/config
-echo "$USER ALL=(root) NOPASSWD: /opt/kids-control/install.sh" | sudo tee /etc/sudoers.d/kids-control
+echo "$USER ALL=(root) NOPASSWD: /opt/kids-control/install.sh, /usr/bin/timekpra" | sudo tee /etc/sudoers.d/kids-control
 ```
 
 ## Temps d'écran
