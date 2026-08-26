@@ -1,19 +1,28 @@
 {
   "name": "uBlock0@raymondhill.net",
-  "description": "kids-control — managed uBlock Origin settings (hide the YouTube Shorts UI)",
+  "description": "kids-control — managed uBlock Origin settings (neutralize YouTube Shorts: player + UI)",
   "type": "storage",
   "data": {
     "toOverwrite": {
       "filters": [
-        "! kids-control: hide the YouTube Shorts UI",
+        "! kids-control: block the Shorts player data — works even when navigating inside the YouTube app",
+        "||youtube.com/youtubei/v1/reel/*",
+        "||youtube.com/shorts/$document",
+        "! kids-control: hide every Shorts entry point",
         "www.youtube.com##ytd-reel-shelf-renderer",
         "www.youtube.com##ytd-rich-shelf-renderer[is-shorts]",
         "www.youtube.com##ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])",
         "www.youtube.com##ytd-guide-entry-renderer:has(a[title=\"Shorts\"])",
         "www.youtube.com##ytd-mini-guide-entry-renderer:has([title=\"Shorts\"])",
+        "www.youtube.com##yt-tab-shape[tab-title=\"Shorts\"]",
         "www.youtube.com##a[title=\"Shorts\"]",
+        "www.youtube.com##ytd-rich-item-renderer:has(a[href^=\"/shorts/\"])",
+        "www.youtube.com##ytd-video-renderer:has(a[href^=\"/shorts/\"])",
+        "www.youtube.com##ytd-compact-video-renderer:has(a[href^=\"/shorts/\"])",
+        "www.youtube.com##ytd-reel-video-renderer",
         "m.youtube.com##ytm-reel-shelf-renderer",
-        "m.youtube.com##ytm-pivot-bar-item-renderer:has-text(Shorts)"
+        "m.youtube.com##ytm-pivot-bar-item-renderer:has-text(Shorts)",
+        "m.youtube.com##ytm-video-with-context-renderer:has(a[href^=\"/shorts/\"])"
       ]
     }
   }
