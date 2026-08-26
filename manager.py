@@ -161,7 +161,10 @@ async function refresh() {
   if (!s.reachable) {
     $("chips").innerHTML = chip("connection", "unreachable", false);
     $("banner").style.display = "block";
-    $("banner").textContent = "SSH connection failed: " + (s.error || "unknown error");
+    let msg = "SSH connection failed: " + (s.error || "unknown error");
+    if ((s.error || "").includes("Permission denied"))
+      msg += " — your SSH key is not available in this environment (locked or missing ssh-agent). Launch from a terminal where ssh works, or point SSH_AUTH_SOCK to your agent.";
+    $("banner").textContent = msg;
     return;
   }
   $("chips").innerHTML =
