@@ -275,7 +275,7 @@ PAGE = """<!DOCTYPE html>
 
   <div class="card">
     <h2>Screen time (Timekpr-nExT)</h2>
-    <p class="hint">Changes apply immediately on the child's session — no Apply, no Firefox restart needed.<br>Checked day = computer <b>allowed</b> that day, for the given number of minutes. Unchecked = no computer at all that day.</p>
+    <p class="hint">Changes apply immediately on the child's session — no Apply, no Firefox restart needed.<br>Controls the whole <b>login session</b> of the account (every app, not just Firefox); when time is up or outside allowed hours, the session is closed. Checked day = session allowed that day, for the given number of minutes (active use only — locked screen doesn't count). Unchecked = no session at all that day.</p>
     <div class="tk-row">
       Child account: <select id="tk-user" onchange="tkLoad()"></select>
       <span id="tk-today"></span>
