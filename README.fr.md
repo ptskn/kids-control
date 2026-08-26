@@ -40,7 +40,7 @@ Le projet est installé dans `/opt/kids-control`. Relancer la commande le met à
 - `blocked-domains.txt` — un domaine par ligne, bloqué partout.
 - `blocked-url-patterns.txt` — patterns d'URL bloqués dans Firefox seulement (ex. `*://*.youtube.com/shorts/*`).
 - `safesearch-hosts.txt` — entrées SafeSearch (ajoutez votre domaine Google local).
-- `blocked-channels.txt` — **chaînes** YouTube (`@Handle` : page bloquée + vidéos masquées partout) et **mots-clés** (toute vignette contenant le mot/la phrase est masquée).
+- `blocked-channels.txt` — **chaînes** YouTube à bannir, un `@Handle` par ligne : la page de la chaîne est bloquée et toutes ses vignettes sont masquées (accueil, recherche, suggestions).
 - `firefox-policies.template.json` — page d'accueil verrouillée, etc.
 
 ## Temps d'écran

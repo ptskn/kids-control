@@ -40,7 +40,7 @@ Edit the lists in `/opt/kids-control/config/`, then re-run `sudo /opt/kids-contr
 - `blocked-domains.txt` — one domain per line, blocked everywhere (hosts + Firefox).
 - `blocked-url-patterns.txt` — URL patterns blocked in Firefox only, to block a *section* of a site (e.g. `*://*.youtube.com/shorts/*`).
 - `safesearch-hosts.txt` — SafeSearch entries; add your local Google domain (e.g. `google.de`).
-- `blocked-channels.txt` — YouTube **channels** (`@Handle`: page blocked + videos hidden everywhere) and **keywords** (any video card containing the word/phrase is hidden).
+- `blocked-channels.txt` — YouTube **channels** to ban, one `@Handle` per line: the channel page is blocked and every video card linking to it is hidden (home, search, suggestions).
 - `firefox-policies.template.json` — change the locked homepage, etc.
 
 Both scripts are idempotent — re-run them as often as you like.

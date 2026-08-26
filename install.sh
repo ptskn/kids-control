@@ -44,7 +44,7 @@ done
 info "Generating Firefox policies and uBlock settings…"
 GEN_DIR="$(mktemp -d)"
 python3 - "$CONFIG_DIR" "$GEN_DIR" <<'PYEOF'
-import json, re, sys, pathlib
+import json, sys, pathlib
 cfg = pathlib.Path(sys.argv[1])
 out = pathlib.Path(sys.argv[2])
 
@@ -57,7 +57,8 @@ def lines(name):
 
 channels = lines("blocked-channels.txt")
 handles  = [c for c in channels if c.startswith("@")]
-keywords = [c for c in channels if not c.startswith("@")]
+for bad in (c for c in channels if not c.startswith("@")):
+    print(f"kids-control: ignored entry in blocked-channels.txt (must start with @): {bad}", file=sys.stderr)
 
 # --- Firefox policies ---
 policies = json.loads((cfg / "firefox-policies.template.json").read_text(encoding="utf-8"))
@@ -81,12 +82,6 @@ if handles:
         filters.append(f'www.youtube.com##a[href^="/{h}"]')
         for c in CONTAINERS:
             filters.append(f'www.youtube.com##{c}:has(a[href^="/{h}"])')
-if keywords:
-    filters.append("! kids-control: blocked keywords (from blocked-channels.txt)")
-    for k in keywords:
-        rx = re.escape(k).replace("/", "\\/")
-        for c in CONTAINERS:
-            filters.append(f'www.youtube.com##{c}:has-text(/{rx}/i)')
 (out / "ublock.json").write_text(json.dumps(ub, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 PYEOF
 GENERATED="$GEN_DIR/policies.json"
