@@ -1,0 +1,12 @@
+# kids-control — URL patterns blocked in Firefox (match patterns)
+# Use these to block a *section* of a site without blocking the whole site.
+# After editing, re-run:  sudo ./install.sh
+
+# YouTube Shorts (regular YouTube stays accessible)
+*://*.youtube.com/shorts/*
+*://youtube.com/shorts/*
+*://*.youtube-nocookie.com/shorts/*
+
+# Facebook Reels (Facebook itself is not blocked globally)
+*://*.facebook.com/reel/*
+*://*.facebook.com/reels/*

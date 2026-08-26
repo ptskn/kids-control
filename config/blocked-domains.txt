@@ -1,0 +1,27 @@
+# kids-control — blocked domains (hosts file + Firefox policies)
+# One domain per line. Subdomains are covered automatically in Firefox
+# (*.domain); for /etc/hosts, add important subdomains explicitly
+# (e.g. vm.tiktok.com).
+# After editing, re-run:  sudo ./install.sh
+
+# ——— TikTok (primary target) ———
+tiktok.com
+vm.tiktok.com
+vt.tiktok.com
+tiktokcdn.com
+tiktokcdn-us.com
+tiktokv.com
+ttwstatic.com
+musical.ly
+byteoversea.com
+
+# ——— Social networks / short-form content ———
+instagram.com
+cdninstagram.com
+snapchat.com
+sc-cdn.net
+twitter.com
+x.com
+t.co
+reddit.com
+redd.it

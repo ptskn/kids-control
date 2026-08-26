@@ -1,0 +1,14 @@
+# kids-control — hosts entries that force filtered modes
+# Stable IPs documented by Google.
+
+# Force Google SafeSearch (forcesafesearch.google.com)
+# Add your local Google domain if needed (e.g. google.de, google.co.uk).
+216.239.38.120 google.com www.google.com
+216.239.38.120 google.fr www.google.fr
+
+# YouTube in moderate Restricted Mode (restrictmoderate.youtube.com)
+216.239.38.119 www.youtube.com
+216.239.38.119 m.youtube.com
+216.239.38.119 youtubei.googleapis.com
+216.239.38.119 youtube.googleapis.com
+216.239.38.119 www.youtube-nocookie.com

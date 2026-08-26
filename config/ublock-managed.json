@@ -1,0 +1,20 @@
+{
+  "name": "uBlock0@raymondhill.net",
+  "description": "kids-control — managed uBlock Origin settings (hide the YouTube Shorts UI)",
+  "type": "storage",
+  "data": {
+    "toOverwrite": {
+      "filters": [
+        "! kids-control: hide the YouTube Shorts UI",
+        "www.youtube.com##ytd-reel-shelf-renderer",
+        "www.youtube.com##ytd-rich-shelf-renderer[is-shorts]",
+        "www.youtube.com##ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts])",
+        "www.youtube.com##ytd-guide-entry-renderer:has(a[title=\"Shorts\"])",
+        "www.youtube.com##ytd-mini-guide-entry-renderer:has([title=\"Shorts\"])",
+        "www.youtube.com##a[title=\"Shorts\"]",
+        "m.youtube.com##ytm-reel-shelf-renderer",
+        "m.youtube.com##ytm-pivot-bar-item-renderer:has-text(Shorts)"
+      ]
+    }
+  }
+}

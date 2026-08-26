@@ -1,0 +1,30 @@
+{
+  "_comment": "Generated and managed by kids-control — the WebsiteFilter.Block list is injected by install.sh",
+  "policies": {
+    "WebsiteFilter": {
+      "Block": []
+    },
+    "ExtensionSettings": {
+      "*": {
+        "installation_mode": "blocked",
+        "blocked_install_message": "Installing extensions is disabled on this computer."
+      },
+      "uBlock0@raymondhill.net": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi"
+      }
+    },
+    "DNSOverHTTPS": {
+      "Enabled": false,
+      "Locked": true
+    },
+    "BlockAboutConfig": true,
+    "BlockAboutProfiles": true,
+    "Homepage": {
+      "URL": "https://www.qwantjunior.com/",
+      "Locked": true,
+      "StartPage": "homepage"
+    },
+    "OverrideFirstRunPage": "https://www.qwantjunior.com/"
+  }
+}
