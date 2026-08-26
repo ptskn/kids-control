@@ -88,34 +88,50 @@ PAGE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>kids-control manager</title>
 <style>
-  :root { --accent:#4f46e5; --ok:#16a34a; --bad:#dc2626; --muted:#6b7280;
-          --bg:#f4f5f7; --card:#ffffff; --border:#e5e7eb; }
-  * { box-sizing:border-box; }
-  body { margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:#111827; }
-  .wrap { max-width:920px; margin:0 auto; padding:24px 16px 60px; }
-  h1 { font-size:22px; margin:0 0 4px; } h1 small { color:var(--muted); font-weight:400; }
-  .chips { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 22px; }
-  .chip { background:var(--card); border:1px solid var(--border); border-radius:999px;
-          padding:5px 12px; font-size:13px; }
-  .chip b.ok { color:var(--ok); } .chip b.bad { color:var(--bad); }
-  .card { background:var(--card); border:1px solid var(--border); border-radius:12px;
-          padding:16px; margin-bottom:16px; }
-  .card h2 { margin:0 0 4px; font-size:15px; }
-  .card p.hint { margin:0 0 10px; font-size:13px; color:var(--muted); }
-  textarea { width:100%; min-height:150px; font:13px/1.5 ui-monospace,monospace;
-             border:1px solid var(--border); border-radius:8px; padding:10px; resize:vertical; }
-  button { background:var(--accent); color:#fff; border:0; border-radius:8px;
-           padding:8px 16px; font-size:14px; cursor:pointer; margin-top:8px; }
-  button:disabled { background:#c7c9d1; cursor:default; }
-  button.big { font-size:16px; padding:12px 26px; }
-  .save-state { margin-left:10px; font-size:13px; }
-  #applyout { background:#0f172a; color:#d1e7ff; font:12px/1.5 ui-monospace,monospace;
-              border-radius:8px; padding:12px; white-space:pre-wrap; display:none;
-              max-height:300px; overflow:auto; margin-top:10px; }
-  .banner { border-left:4px solid var(--bad); background:#fef2f2; padding:10px 14px;
-            border-radius:8px; font-size:13px; margin-bottom:16px; display:none; }
-  .banner code { background:#fff; padding:1px 5px; border-radius:4px; }
-  .reminder { color:var(--ok); font-size:14px; margin-top:8px; display:none; }
+  :root { --bg-primary:#0d1117; --bg-secondary:#161b22; --bg-tertiary:#21262d;
+          --border-color:#30363d; --text-primary:#c9d1d9; --text-secondary:#8b949e;
+          --accent-green:#3fb950; --accent-red:#f85149; --accent-blue:#58a6ff;
+          --accent-yellow:#d29922; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+         background:var(--bg-primary); color:var(--text-primary); }
+  .wrap { max-width:920px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:20px; margin:0 0 4px; } h1 small { color:var(--text-secondary); font-weight:400; font-size:14px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 18px; }
+  .chip { background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:999px;
+          padding:4px 11px; font-size:12px; color:var(--text-secondary); }
+  .chip b { color:var(--text-primary); font-weight:600; }
+  .chip b.ok { color:var(--accent-green); } .chip b.bad { color:var(--accent-red); }
+  .card { background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:6px;
+          padding:14px; margin-bottom:12px; }
+  .card h2 { margin:0 0 3px; font-size:14px; }
+  .card p.hint { margin:0 0 8px; font-size:12px; color:var(--text-secondary); }
+  .card p.hint code { background:var(--bg-tertiary); padding:1px 5px; border-radius:4px; font-size:11px; }
+  textarea { width:100%; min-height:140px; font:12px/1.5 ui-monospace,'SF Mono',Consolas,monospace;
+             background:var(--bg-primary); color:var(--text-primary);
+             border:1px solid var(--border-color); border-radius:6px; padding:9px; resize:vertical; }
+  textarea:focus { outline:none; border-color:var(--accent-blue); }
+  button { background:var(--bg-tertiary); color:var(--text-primary);
+           border:1px solid var(--border-color); border-radius:6px;
+           padding:6px 14px; font-size:13px; font-weight:500; cursor:pointer;
+           margin-top:8px; transition:all .15s; }
+  button:hover { background:var(--border-color); }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  button.primary { background:var(--accent-blue); border-color:var(--accent-blue); color:#0d1117; }
+  button.primary:hover { background:#1f6feb; color:#fff; }
+  button.big { font-size:14px; padding:9px 22px; }
+  .save-state { margin-left:10px; font-size:12px; color:var(--accent-green); }
+  #applyout { background:var(--bg-primary); border:1px solid var(--border-color); color:var(--text-primary);
+              font:11px/1.5 ui-monospace,Consolas,monospace; border-radius:6px; padding:10px;
+              white-space:pre-wrap; display:none; max-height:300px; overflow:auto; margin-top:10px; }
+  .banner { border-left:3px solid var(--accent-red); background:rgba(248,81,73,.1);
+            padding:9px 13px; border-radius:6px; font-size:12px; margin-bottom:14px; display:none; }
+  .banner code { background:var(--bg-tertiary); padding:1px 5px; border-radius:4px; }
+  .reminder { color:var(--accent-green); font-size:13px; margin-top:8px; display:none; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-track { background:var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background:var(--border-color); border-radius:4px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--text-secondary); }
 </style></head><body><div class="wrap">
   <h1>kids-control <small id="host"></small></h1>
   <div class="chips" id="chips">Loading status…</div>
@@ -143,7 +159,7 @@ PAGE = """<!DOCTYPE html>
   <div class="card">
     <h2>Apply on the child's computer</h2>
     <p class="hint">Re-runs install.sh over SSH: regenerates Firefox policies, uBlock filters and /etc/hosts from the saved lists.</p>
-    <button class="big" id="applybtn" onclick="apply()">Apply now</button>
+    <button class="primary big" id="applybtn" onclick="apply()">Apply now</button>
     <div class="reminder" id="reminder">✔ Applied. Firefox must be fully closed and reopened on the child's session to load the new filters.</div>
     <pre id="applyout"></pre>
   </div>
