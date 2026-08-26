@@ -1,6 +1,6 @@
 # kids-control
 
-**Parental controls for a child's Linux Mint computer** — block TikTok, YouTube Shorts and social networks, force SafeSearch and YouTube Restricted Mode, filter adult content at the DNS level, and manage screen time. All with plain system mechanisms a child account cannot undo.
+**Parental controls for a child's Linux computer** (Debian/Ubuntu family) — block TikTok, YouTube Shorts and social networks, force SafeSearch and YouTube Restricted Mode, filter adult content at the DNS level, and manage screen time. All with plain system mechanisms a child account cannot undo.
 
 *Version française : [README.fr.md](README.fr.md)*
 
@@ -28,8 +28,10 @@ The project is installed in `/opt/kids-control`. Re-running the command updates 
 
 ## Requirements
 
-- Linux Mint (or another Ubuntu/Debian derivative) with the default **.deb Firefox**.
+- A **Debian/Ubuntu-family distribution** (`apt`-based): Linux Mint (primary target, tested), LMDE, Debian, Zorin, Pop!_OS, elementary…
+- Firefox installed as a **.deb** (the default everywhere in this family except Ubuntu). On **Ubuntu's snap Firefox**, the blocking policies still apply (the snap reads `/etc/firefox/policies`), but the cosmetic hiding of Shorts thumbnails may not — direct `/shorts/` links stay blocked either way.
 - The child has their **own non-sudo account**. This is the keystone — without it, everything is bypassable.
+- Not for Fedora/Arch/openSUSE without adaptation (package manager and Firefox paths differ).
 
 ## Customize
 
