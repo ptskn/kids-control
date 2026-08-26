@@ -4,6 +4,11 @@
 
 *English version: [README.md](README.md)*
 
+Deux morceaux, tous deux dans ce dépôt :
+
+1. **Les protections** — installées sur le PC de l'enfant en une commande (ci-dessous).
+2. **Le manager** (`manager.py`) — une interface web optionnelle à lancer sur *votre* PC pour éditer les listes et ré-appliquer via SSH, sans plus jamais toucher au PC de l'enfant. Voir [Gestion à distance](#gestion-à-distance-interface-web).
+
 ## Installer
 
 Une seule commande, sur le PC de l'enfant :
@@ -51,8 +56,11 @@ Tout gérer depuis votre propre PC, via SSH — éditer les listes et appliquer 
 python3 manager.py parent@pc-enfant     # ouvre http://127.0.0.1:8800
 ```
 
-Bibliothèque standard Python uniquement ; l'interface est servie sur 127.0.0.1 et parle au PC
-de l'enfant via votre clé ssh. Mise en place unique sur le PC de l'enfant pour l'« Apply » en un clic :
+À lancer depuis un clone de ce dépôt sur votre propre PC (bibliothèque standard Python
+uniquement — aucune dépendance). L'interface est servie sur 127.0.0.1 seulement et parle au
+PC de l'enfant via votre clé ssh. Elle affiche l'état en direct (filtres déployés, entrées
+hosts, Firefox lancé ou non, dernier apply), permet d'éditer les trois listes, et ré-applique
+tout en un clic. Mise en place unique sur le PC de l'enfant pour l'« Apply » en un clic :
 
 ```bash
 sudo chown -R $USER /opt/kids-control/config

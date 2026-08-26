@@ -4,6 +4,11 @@
 
 *Version française : [README.fr.md](README.fr.md)*
 
+Two pieces, both in this repo:
+
+1. **The protections** — installed on the child's computer in one command (below).
+2. **The manager** (`manager.py`) — an optional web UI you run on *your own* computer to edit the blocklists and re-apply over SSH, without ever touching the child's PC again. See [Remote manager](#remote-manager-web-ui).
+
 ## Install
 
 One command, on the child's computer:
@@ -45,6 +50,8 @@ Edit the lists in `/opt/kids-control/config/`, then re-run `sudo /opt/kids-contr
 
 Both scripts are idempotent — re-run them as often as you like.
 
+All of this can also be done from the [web manager](#remote-manager-web-ui) instead.
+
 ## Remote manager (web UI)
 
 Manage everything from your own computer, over SSH — edit the blocklists and apply in one click:
@@ -53,8 +60,11 @@ Manage everything from your own computer, over SSH — edit the blocklists and a
 python3 manager.py parent@child-pc      # opens http://127.0.0.1:8800
 ```
 
-Python standard library only; the UI is served on 127.0.0.1 and talks to the child's
-computer through your ssh key. One-time setup on the child's computer for one-click Apply:
+Run it from a clone of this repo on your own computer (Python standard library only — no
+dependencies). The UI is served on 127.0.0.1 only and talks to the child's computer through
+your ssh key. It shows the live status (deployed filter count, hosts entries, Firefox
+running or not, last apply), lets you edit the three blocklists, and re-applies everything
+in one click. One-time setup on the child's computer for one-click Apply:
 
 ```bash
 sudo chown -R $USER /opt/kids-control/config
