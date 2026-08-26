@@ -28,7 +28,7 @@ fi
 
 # Preserve customized blocklists from a previous install
 if [ -d "$INSTALL_DIR/config" ]; then
-  for f in blocked-domains.txt blocked-url-patterns.txt safesearch-hosts.txt; do
+  for f in blocked-domains.txt blocked-url-patterns.txt safesearch-hosts.txt blocked-channels.txt; do
     [ -f "$INSTALL_DIR/config/$f" ] && cp "$INSTALL_DIR/config/$f" "$TMP/config/$f"
   done
 fi

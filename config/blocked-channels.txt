@@ -1,0 +1,15 @@
+# kids-control — blocked YouTube channels and keywords
+# Two kinds of entries, one per line:
+#
+#   @Handle    → blocks that channel: its page won't load, and every video
+#                card linking to it is hidden (home, search, suggestions).
+#                The handle is in the channel page URL: youtube.com/@SomeChannel
+#
+#   keyword    → hides any video card whose visible text (title, channel
+#                name…) contains that word or phrase (case-insensitive).
+#
+# After editing, re-run:  sudo /opt/kids-control/install.sh
+#
+# Examples (remove the leading # to activate):
+#@SomeChannel
+#some annoying phrase

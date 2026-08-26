@@ -41,24 +41,55 @@ for f in blocked-domains.txt blocked-url-patterns.txt safesearch-hosts.txt \
 done
 
 # ─── 1. Firefox policies (system-wide, not editable without root) ───────
-info "Generating Firefox policies…"
-GENERATED="$(mktemp)"
-python3 - "$CONFIG_DIR" > "$GENERATED" <<'PYEOF'
-import json, sys, pathlib
+info "Generating Firefox policies and uBlock settings…"
+GEN_DIR="$(mktemp -d)"
+python3 - "$CONFIG_DIR" "$GEN_DIR" <<'PYEOF'
+import json, re, sys, pathlib
 cfg = pathlib.Path(sys.argv[1])
+out = pathlib.Path(sys.argv[2])
 
 def lines(name):
-    return [l.strip() for l in (cfg / name).read_text(encoding="utf-8").splitlines()
+    p = cfg / name
+    if not p.is_file():
+        return []
+    return [l.strip() for l in p.read_text(encoding="utf-8").splitlines()
             if l.strip() and not l.strip().startswith("#")]
 
+channels = lines("blocked-channels.txt")
+handles  = [c for c in channels if c.startswith("@")]
+keywords = [c for c in channels if not c.startswith("@")]
+
+# --- Firefox policies ---
 policies = json.loads((cfg / "firefox-policies.template.json").read_text(encoding="utf-8"))
 block = []
 for d in lines("blocked-domains.txt"):
     block += [f"*://{d}/*", f"*://*.{d}/*"]
 block += lines("blocked-url-patterns.txt")
+for h in handles:
+    block += [f"*://www.youtube.com/{h}*", f"*://m.youtube.com/{h}*"]
 policies["policies"]["WebsiteFilter"]["Block"] = block
-print(json.dumps(policies, indent=2, ensure_ascii=False))
+(out / "policies.json").write_text(json.dumps(policies, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+# --- uBlock managed storage (template + blocked channels/keywords) ---
+ub = json.loads((cfg / "ublock-managed.json").read_text(encoding="utf-8"))
+filters = ub["data"]["toOverwrite"]["filters"]
+CONTAINERS = ["ytd-rich-item-renderer", "ytd-video-renderer", "ytd-compact-video-renderer",
+              "yt-lockup-view-model", "ytd-channel-renderer", "ytm-shorts-lockup-view-model"]
+if handles:
+    filters.append("! kids-control: blocked channels (from blocked-channels.txt)")
+    for h in handles:
+        filters.append(f'www.youtube.com##a[href^="/{h}"]')
+        for c in CONTAINERS:
+            filters.append(f'www.youtube.com##{c}:has(a[href^="/{h}"])')
+if keywords:
+    filters.append("! kids-control: blocked keywords (from blocked-channels.txt)")
+    for k in keywords:
+        rx = re.escape(k).replace("/", "\\/")
+        for c in CONTAINERS:
+            filters.append(f'www.youtube.com##{c}:has-text(/{rx}/i)')
+(out / "ublock.json").write_text(json.dumps(ub, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 PYEOF
+GENERATED="$GEN_DIR/policies.json"
 
 for dest in "${POLICY_PATHS[@]}"; do
   install -d "$(dirname "$dest")"
@@ -69,12 +100,11 @@ for dest in "${POLICY_PATHS[@]}"; do
   install -m 644 "$GENERATED" "$dest"
   info "Policies written: $dest"
 done
-rm -f "$GENERATED"
-
-# ─── 2. Managed uBlock Origin settings (hide the Shorts UI) ─────────────
+# ─── 2. Managed uBlock Origin settings (Shorts + blocked channels) ──────
 install -d "$(dirname "$UBLOCK_MANAGED")"
-install -m 644 "$CONFIG_DIR/ublock-managed.json" "$UBLOCK_MANAGED"
+install -m 644 "$GEN_DIR/ublock.json" "$UBLOCK_MANAGED"
 info "Managed uBlock Origin settings: $UBLOCK_MANAGED"
+rm -rf "$GEN_DIR"
 
 # ─── 3. /etc/hosts (blocks in every app + forces SafeSearch) ────────────
 info "Updating $HOSTS_FILE…"
