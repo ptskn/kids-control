@@ -264,7 +264,13 @@ def main():
     args = ap.parse_args()
     REMOTE = args.remote
     url = f"http://127.0.0.1:{args.port}"
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    except OSError:
+        print(f"Already running at {url} — opening the browser.")
+        if not args.no_browser:
+            webbrowser.open(url)
+        return
     print(f"kids-control manager: {url}  (managing {REMOTE} — Ctrl+C to stop)")
     if not args.no_browser:
         webbrowser.open(url)
