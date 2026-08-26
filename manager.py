@@ -275,7 +275,7 @@ PAGE = """<!DOCTYPE html>
 
   <div class="card">
     <h2>Screen time (Timekpr-nExT)</h2>
-    <p class="hint">Changes apply immediately on the child's session — no Apply, no Firefox restart needed.</p>
+    <p class="hint">Changes apply immediately on the child's session — no Apply, no Firefox restart needed.<br>Checked day = computer <b>allowed</b> that day, for the given number of minutes. Unchecked = no computer at all that day.</p>
     <div class="tk-row">
       Child account: <select id="tk-user" onchange="tkLoad()"></select>
       <span id="tk-today"></span>
