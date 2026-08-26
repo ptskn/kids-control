@@ -44,8 +44,9 @@ echo "filters=$(python3 -c "import json;print(len(json.load(open('$f'))['data'][
 echo "applied=$(stat -c %y "$f" 2>/dev/null | cut -d. -f1)"
 echo "hosts=$(grep -c '^0\.0\.0\.0' /etc/hosts 2>/dev/null || echo 0)"
 echo "firefox=$(pgrep -x firefox >/dev/null 2>&1 && echo running || echo stopped)"
-echo "canapply=$(sudo -n -l /opt/kids-control/install.sh >/dev/null 2>&1 && echo yes || echo no)"
-echo "canscreen=$(sudo -n -l /usr/bin/timekpra >/dev/null 2>&1 && echo yes || echo no)"
+np=$(sudo -n -l 2>/dev/null | grep NOPASSWD || true)
+echo "canapply=$(echo "$np" | grep -qF /opt/kids-control/install.sh && echo yes || echo no)"
+echo "canscreen=$(echo "$np" | grep -qF /usr/bin/timekpra && echo yes || echo no)"
 echo "writable=$(test -w /opt/kids-control/config/blocked-channels.txt && echo yes || echo no)"
 """
 
