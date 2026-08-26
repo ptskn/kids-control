@@ -43,6 +43,22 @@ Le projet est installé dans `/opt/kids-control`. Relancer la commande le met à
 - `blocked-channels.txt` — **chaînes** YouTube à bannir, un `@Handle` par ligne : la page de la chaîne est bloquée et toutes ses vignettes sont masquées (accueil, recherche, suggestions).
 - `firefox-policies.template.json` — page d'accueil verrouillée, etc.
 
+## Gestion à distance (interface web)
+
+Tout gérer depuis votre propre PC, via SSH — éditer les listes et appliquer en un clic :
+
+```bash
+python3 manager.py parent@pc-enfant     # ouvre http://127.0.0.1:8800
+```
+
+Bibliothèque standard Python uniquement ; l'interface est servie sur 127.0.0.1 et parle au PC
+de l'enfant via votre clé ssh. Mise en place unique sur le PC de l'enfant pour l'« Apply » en un clic :
+
+```bash
+sudo chown -R $USER /opt/kids-control/config
+echo "$USER ALL=(root) NOPASSWD: /opt/kids-control/install.sh" | sudo tee /etc/sudoers.d/kids-control
+```
+
 ## Temps d'écran
 
 Menu → **Timekpr-nExT (administration)** → compte de l'enfant → durée quotidienne et plages autorisées.

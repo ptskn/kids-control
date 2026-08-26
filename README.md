@@ -45,6 +45,22 @@ Edit the lists in `/opt/kids-control/config/`, then re-run `sudo /opt/kids-contr
 
 Both scripts are idempotent — re-run them as often as you like.
 
+## Remote manager (web UI)
+
+Manage everything from your own computer, over SSH — edit the blocklists and apply in one click:
+
+```bash
+python3 manager.py parent@child-pc      # opens http://127.0.0.1:8800
+```
+
+Python standard library only; the UI is served on 127.0.0.1 and talks to the child's
+computer through your ssh key. One-time setup on the child's computer for one-click Apply:
+
+```bash
+sudo chown -R $USER /opt/kids-control/config
+echo "$USER ALL=(root) NOPASSWD: /opt/kids-control/install.sh" | sudo tee /etc/sudoers.d/kids-control
+```
+
 ## Screen time
 
 Menu → **Timekpr-nExT (administration)** → select the child's account → set the daily allowance and the allowed hours. The child sees a discreet countdown; the session locks when time is up.
