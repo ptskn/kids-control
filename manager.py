@@ -388,6 +388,8 @@ async function tkLoad() {
   $("tk-state").textContent = "";
   const inf = r.info;
   $("tk-today").textContent = `today: ${fmt(inf.TIME_SPENT_DAY)} used / ${fmt(inf.TIME_LEFT_DAY)} left`;
+  const hrs = (inf.ALLOWED_HOURS_1 || "").split(";").filter(Boolean).map(h => parseInt(h));
+  if (hrs.length) { $("tk-from").value = Math.min(...hrs); $("tk-to").value = Math.max(...hrs) + 1; }
   const days = (inf.ALLOWED_WEEKDAYS || "").split(";").filter(Boolean).map(Number);
   const lims = (inf.LIMITS_PER_WEEKDAYS || "").split(";").filter(Boolean).map(Number);
   for (let d = 1; d <= 7; d++) {
