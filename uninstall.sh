@@ -12,6 +12,7 @@ HOSTS_FILE="$ROOT/etc/hosts"
 POLICY_PATHS=("$ROOT/etc/firefox/policies/policies.json" "$ROOT/usr/lib/firefox/distribution/policies.json")
 UBLOCK_MANAGED="$ROOT/usr/lib/mozilla/managed-storage/uBlock0@raymondhill.net.json"
 NM_DNS_CONF="$ROOT/etc/NetworkManager/conf.d/90-kids-control-dns.conf"
+RESOLVED_CONF="$ROOT/etc/systemd/resolved.conf.d/90-kids-control-dns.conf"
 
 info(){ printf '\033[1;34m[kids-control]\033[0m %s\n' "$*"; }
 
@@ -41,10 +42,14 @@ for dest in "${POLICY_PATHS[@]}"; do
 done
 
 # ─── Managed uBlock + family DNS ────────────────────────────────────────
-[ -f "$UBLOCK_MANAGED" ] && { rm -f "$UBLOCK_MANAGED"; info "Deleted: $UBLOCK_MANAGED"; }
-[ -f "$NM_DNS_CONF" ]    && { rm -f "$NM_DNS_CONF";    info "Deleted: $NM_DNS_CONF"; }
+for f in "$UBLOCK_MANAGED" "$NM_DNS_CONF" "$RESOLVED_CONF"; do
+  if [ -f "$f" ]; then rm -f "$f"; info "Deleted: $f"; fi
+done
 
 if [ -z "$ROOT" ]; then
+  if systemctl is-active --quiet systemd-resolved; then
+    systemctl restart systemd-resolved
+  fi
   if systemctl is-active --quiet NetworkManager; then
     systemctl reload NetworkManager 2>/dev/null || systemctl restart NetworkManager
   fi
