@@ -1,10 +1,10 @@
 # Specs / Site famille sur pragma
 
-Clé : `site-famille` (pas de ticket Jira). Version 1.1 du 18 octobre 2026.
-Sources : `docs/spec-site-famille.md` v0.2, `docs/plan-site-famille.md` v0.3, `docs/collecte-site-famille.md`, `docs/challenge-site-famille.md`.
+Clé : `site-famille` (pas de ticket Jira). Version 1.2 du 18 octobre 2026.
+Sources : `docs/spec-site-famille.md` v0.2, `docs/plan-site-famille.md` v0.3, `docs/collecte-site-famille.md`, `docs/challenge-site-famille.md`, `docs/challenge-site-famille-v1.1.md`.
 Ce fichier est la spec canonique du pipeline. Les tables détaillées du portage restent dans `docs/spec-site-famille.md`, section 6. Ce fichier y renvoie sans les recopier.
 
-Changements depuis la v1.0 : section 9.
+Changements depuis la v1.0 : section 9. Changements depuis la v1.1 : section 10.
 
 ## 1. Contexte
 
@@ -133,7 +133,7 @@ Table 3.1.2 : codes d'erreur. Un outil en erreur rend un résultat d'outil en er
 | SP-1 | `roles.json` donne `true` au rôle `enfant` pour `TuteurPlugin` et `KidChatPlugin`, et à lui seul. Le rôle `parent` reçoit `true` pour `KidsControlPlugin`, `TuteurParentPlugin` et `KidChatParentPlugin`, et à eux seuls. | rev, inst |
 | SP-2 | Une session `enfant` qui appelle un outil d'un plugin absent de la carte de son rôle, par exemple `bash_execute`, est refusée par RBAC. | inst |
 | SP-3 | Un compte `enfant` se connecte et lit ses permissions sans droit supplémentaire. `rbac_login`, `rbac_my_permissions` et `rbac_my_roles` sont exemptés par `isRbacTool`. | e2e |
-| SP-4 | Le registre des enfants est le fichier `<racineFamille>/enfants.json`, objet `{ "<compte>": { "hote": "...", "utilisateur": "..." } }`. Un compte est un enfant si et seulement s'il est clé de ce fichier. | ctest |
+| SP-4 | Le registre des enfants est le fichier `<racineFamille>/enfants.json`, objet `{ "<compte>": { "hote": "...", "utilisateur": "..." } }`. Un compte est un enfant si et seulement s'il est clé de ce fichier. Chaque plugin relit le fichier quand sa date de modification change : un ajout ne demande aucun redémarrage. | ctest |
 | SP-5 | Un outil de `TuteurPlugin` ou `KidChatPlugin` prend l'élève dans `_username`. Un argument `enfant` fourni rend `requete`. Un `_username` hors du registre rend `requete`, sans accès disque. | ctest, inst |
 | SP-6 | Un outil des trois plugins parent marqué « obligatoire » exige `enfant`, clé du registre. Sinon il rend `requete`. `kc_host_set` crée la clé quand elle manque. | ctest, inst |
 | SP-7 | Un identifiant d'élève respecte `^[a-z][a-z0-9_-]{0,31}$`. Toute autre valeur rend `requete`, sans accès disque. | ctest |
@@ -164,7 +164,7 @@ Table 3.1.2 : codes d'erreur. Un outil en erreur rend un résultat d'outil en er
 | SP-22 | `/parent/temps-ecran` lit et modifie jours, limites, plage horaire et bonus (`kc_screen_*`). | e2e |
 | SP-23 | `/parent/rapport` affiche le rapport ECharts par période, pas et discipline (`tuteur_rapport`). | e2e |
 | SP-24 | `/parent/bilan` affiche le bilan des 14 derniers jours (`tuteur_bilan`). | e2e |
-| SP-25 | `/parent/profil` lit et modifie prénom affiché, âge, classe, niveaux et consignes (`tuteur_profil_get`, `tuteur_profil_set`). | e2e |
+| SP-25 | `/parent/profil` lit et modifie prénom affiché, âge, classe, niveaux et consignes (`tuteur_profil_get`, `tuteur_profil_set`). `tuteur_profil_set` n'a pas d'argument `code` : le rôle `parent` remplace `code_parent` de `config.py` (ligne 42), qui n'est pas porté. | e2e, rev |
 | SP-26 | `/parent/chat` affiche l'historique complet du chat de l'enfant choisi, en lecture seule (`chat_journal`). | e2e |
 | SP-27 | Le parent associe chaque enfant à un hôte SSH et à un utilisateur Linux (`kc_host_get`, `kc_host_set`). | inst |
 | SP-28 | `tuteur_verifier` rend les messages de `Catalogue.verifier` sur le catalogue chargé. | ctest |
@@ -228,13 +228,15 @@ Table 3.1.2 : codes d'erreur. Un outil en erreur rend un résultat d'outil en er
 
 | Id | Exigence | V |
 |---|---|---|
-| SP-64 | `tuteur_importer` copie `<racineFamille>/import/<eleve>/journal.sqlite` et `profil.json` sous `<racineDonnees tuteur>/<eleve>/`. Une cible qui contient déjà une séance rend `interdit`. | ctest, inst |
+| SP-64 | `tuteur_importer` copie `<racineFamille>/import/<eleve>/journal.sqlite` et `profil.json` sous `<racineDonnees tuteur>/<eleve>/`. Une cible qui contient déjà une séance rend `interdit`. Après la copie, l'outil supprime de la table `etat` du journal copié la ligne `cle = 'assistant.session_id'`. | ctest, inst |
 | SP-65 | `chat_importer` copie les lignes de la table `conversation` de `<racineFamille>/import/<eleve>/journal.sqlite` dans `chat.sqlite`. Une cible qui contient déjà un message rend `interdit`. | ctest, inst |
 | SP-66 | La clé `assistant.session_id` de la table `etat` n'est pas importée. Le premier message après l'import ouvre une nouvelle session `claude`. | ctest |
 | SP-67 | Après retrait, aucun processus n'écoute sur 8800, 8801, 8803, 4300. | cmd |
 | SP-68 | Dans la session de l'enfant, `curl -s -o /dev/null -w '%{http_code}' http://192.168.0.101:9051/` rend `200`. | pc |
 | SP-69 | Sur le PC de l'enfant, `WebsiteFilter.Block` de `policies.json` ne contient aucun motif qui couvre `http://192.168.0.101:9051/`, et `/etc/hosts` ne cite pas `192.168.0.101`. | pc |
-| SP-70 | Le lanceur « Mon tuteur » du PC de l'enfant ouvre `http://192.168.0.101:9051/` dans Firefox. Aucun lanceur ne cite plus `python3 -m tuteur`. | pc |
+| SP-70 | Le lanceur « Mon tuteur » du PC de l'enfant ouvre `http://192.168.0.101:9051/` dans Firefox. Il existe au menu (`/usr/share/applications/site-famille.desktop`) et sur le bureau (`<bureau>/Mon-Tuteur.desktop`, écrasé). Vérifié à la fin de T-25. | pc |
+| SP-71 | Après T-28, aucun fichier `.desktop` du PC de l'enfant ne cite `python3 -m tuteur`, et `/opt/tuteur` n'existe plus. | pc |
+| SP-72 | Valeurs par défaut des répertoires : `<racineDonnees tuteur>` vaut `<racineFamille>/tuteur` ; `<racineDonnees kid>` vaut `<racineFamille>/chat`. L'historique d'un élève est `<racineFamille>/chat/<eleve>/chat.sqlite`. | ctest |
 
 ## 4. Critères d'acceptation
 
@@ -329,14 +331,19 @@ Table 3.1.2 : codes d'erreur. Un outil en erreur rend un résultat d'outil en er
 - Then les deux premiers appels réussissent, `chat_journal` rend l'ancien historique, et le troisième appel rend `interdit`.
 
 **CA-19 — Accès depuis le PC de l'enfant (SP-63, SP-68 à SP-70)**
-- Given `kc_apply` exécuté sur le PC de l'enfant
-- When l'enfant clique sur « Mon tuteur »
+- Given `get.sh` exécuté sur le PC de l'enfant depuis la branche `main` qui contient T-25
+- When l'enfant clique sur « Mon tuteur » de son bureau, puis sur celui du menu
 - Then Firefox ouvre `http://192.168.0.101:9051/` et ne propose pas d'enregistrer le mot de passe saisi.
 
 **CA-20 — Retrait (SP-67)**
 - Given la phase de bascule terminée
 - When on lance `ss -ltnp`
 - Then aucun port parmi 8800, 8801, 8803, 4300 n'est en écoute.
+
+**CA-21 — Plus d'ancien lanceur (SP-71)**
+- Given T-28 terminée
+- When on lance `grep -rl 'python3 -m tuteur' /usr/share/applications ~/Bureau ~/Desktop` dans la session de l'enfant
+- Then la commande ne trouve aucun fichier.
 
 ## 5. Impacts code
 
@@ -352,7 +359,8 @@ Constats faits en lecture le 18 octobre 2026.
 | `config/site-famille.desktop` | absent | nouveau lanceur « Mon tuteur » vers `http://192.168.0.101:9051/` (SP-70) |
 | `install.sh` | génère et installe `policies.json` (lignes 18, 65-94) | installe aussi `config/site-famille.desktop` dans `/usr/share/applications/` |
 | `config/blocked-domains.txt`, `config/safesearch-hosts.txt`, `config/blocked-url-patterns.txt` | aucune entrée sur `192.168.0.101` | inchangés ; contrôle par SP-69 |
-| `uninstall.sh`, `get.sh` | inchangés | `uninstall.sh` retire aussi le lanceur |
+| `uninstall.sh` | retire les fichiers posés par `install.sh` | retire aussi le lanceur du menu |
+| `get.sh` | télécharge l'archive de la branche `main` de `ptskn/kids-control` et remplace `/opt/kids-control` (lignes 6-38) | seule voie de mise à jour de `/opt/kids-control` : `kc_apply` relance la copie installée de `install.sh` (`manager.py`, ligne 117) |
 | `README.md`, `README.fr.md` | décrivent `manager.py` | mise à jour en T-28 |
 
 `STATUS_SCRIPT` lance `python3` sur le PC de l'enfant pour compter les filtres uBlock. SP-52 vise le serveur `famille` seulement : le script reste tel quel.
@@ -423,10 +431,10 @@ Chaque tâche suit le cycle TDD : test rouge, code, test vert, commit. Une tâch
 | T-22 | Module `parent` : `protections`, `temps-ecran`, `bilan`, `profil`, `chat`. | SP-21, SP-22, SP-24 à SP-26 | T-20 |
 | T-23 | `parent/rapport` : reprise de `parent-web`, de `app.spec.ts` et `dates.spec.ts`. Écriture des tests de `graphe.ts`, `options.ts`, `rapport.service.ts`. | SP-23 | T-20 |
 | T-24 | Specs Playwright : `smoke`, `components`, `intentions`, « aucune route parent pour l'enfant ». | SP-3, SP-12 à SP-26 | T-21 à T-23 |
-| T-25 | kids_control : deux politiques Firefox, `config/site-famille.desktop`, installation par `install.sh` et retrait par `uninstall.sh`, tests sous `KIDS_CONTROL_ROOT`. | SP-63, SP-68 à SP-70 | T-24 |
-| T-26 | Import : copier par `scp` les deux fichiers du PC vers `<racineFamille>/import/<eleve>/`, puis appeler `tuteur_importer` et `chat_importer`. | SP-64 à SP-66 | T-19 |
+| T-25 | kids_control : deux politiques Firefox, `config/site-famille.desktop`, installation par `install.sh` et retrait par `uninstall.sh`, tests sous `KIDS_CONTROL_ROOT`. Publier sur `main`, puis lancer `get.sh` sur le PC de l'enfant. Écraser `<bureau>/Mon-Tuteur.desktop` par le nouveau lanceur. | SP-63, SP-68 à SP-70 | T-24 |
+| T-26 | Import : lire les clés `journal` et `profil` de `~<utilisateur>/.config/tuteur/config.toml` du PC (`config.py`, lignes 59-62), à défaut prendre les chemins de la section 5.2. Copier par `scp` les deux fichiers vers `<racineFamille>/import/<eleve>/`, puis appeler `tuteur_importer` et `chat_importer`. | SP-64 à SP-66 | T-19 |
 | T-27 | Contrôles du serveur : `pgrep`, `ldd`, `nm`, `ss`, `ip`, `grep` des appels d'exécution. | SP-52 à SP-55, SP-61 | T-18 |
-| T-28 | Une semaine en parallèle. Retrait ensuite de `manager.py`, du paquet `tuteur/`, de `parent-web/` et de `deploy/` sauf `CLAUDE-enfant.md`. Suppression de `/opt/tuteur` et du raccourci `Mon-Tuteur.desktop` sur le PC. Mise à jour des README. | SP-67, SP-70 | T-25, T-26, T-27 |
+| T-28 | Une semaine en parallèle. Retrait ensuite de `manager.py`, du paquet `tuteur/`, de `parent-web/` et de `deploy/` sauf `CLAUDE-enfant.md`. Suppression de `/opt/tuteur` et du raccourci `Mon-Tuteur.desktop` sur le PC. Mise à jour des README. | SP-67, SP-71 | T-25, T-26, T-27 |
 
 T-14 ne dépend que de T-8 : la tâche avance en parallèle de T-5 à T-13.
 
@@ -440,6 +448,8 @@ T-14 ne dépend que de T-8 : la tâche avance en parallèle de T-5 à T-13.
 | `generateurs.py` (984 lignes) | concentre la majorité du risque de portage | T-10 seule, corpus de 200 graines × 3 difficultés par modèle |
 | Erreur d'identité | un enfant voit les données d'un autre | SP-5, CA-5, CA-6, CA-8, tests sur l'instance |
 | Registre désynchronisé des comptes RBAC | un compte `enfant` absent du registre ne peut rien faire | refus `requete` explicite ; ajout par `kc_host_set` (SP-11) |
+| Clé du registre sans compte RBAC | `kc_host_set` accepte un nom mal saisi : aucun plugin ne peut lister les comptes (le SDK n'expose `IRbacService` à aucun plugin) | après chaque `kc_host_set`, se connecter avec le compte enfant et vérifier que `tuteur_themes` réussit |
+| Semaine en parallèle | l'ancien Tuteur n'a plus de lanceur sur le PC dès T-25 | retour arrière : remettre `deploy/Mon-Tuteur.desktop` sur le bureau ; `/opt/tuteur` reste installé jusqu'à T-28 |
 | Accès de l'enfant à un plugin d'exécution | contournement de la protection | SP-1, SP-2, CA-2 |
 | Box qui redirige un port vers `i-machine` | site exposé à Internet malgré SP-61 | relecture de la configuration de la box à la mise en service |
 | Serveur `famille` arrêté | site indisponible pour toute la famille | accepté par le client (plan v0.3, décision 1) |
@@ -461,6 +471,7 @@ T-14 ne dépend que de T-8 : la tâche avance en parallèle de T-5 à T-13.
 | Limite de 2000 caractères d'un message de chat | T-13 | 2000 (SP-34) |
 | Accord client sur la réservation de 9050 et 9051 | T-1, T-18 | aucun : accord requis |
 | Nombre d'enfants, hôtes SSH et comptes Linux réels | T-19, T-26 | données d'exploitation, saisies à la mise en service |
+| Lanceur pendant la semaine en parallèle : remplacer celui du bureau, ou garder deux lanceurs de noms distincts | T-25 | remplacer (SP-70) |
 
 ## 8. Notes de reprise
 
@@ -493,3 +504,19 @@ Réponses aux écarts de `docs/challenge-site-famille.md` :
 | 17. Limite du chat | marquée nouvelle (SP-34) |
 | 18. Cible de redirection | `/enfant/seance` (SP-13) |
 | 19. Textes repris | écrans délimités (SP-19) |
+
+## 10. Changements depuis la v1.1
+
+Réponses aux écarts de `docs/challenge-site-famille-v1.1.md` :
+
+| Écart | Correction |
+|---|---|
+| 1. Mise à jour du PC absente | `get.sh` en section 5.1 ; publication sur `main` et `get.sh` en T-25 ; CA-19 |
+| 2. SP-70 impossible à la fin de T-25 | SP-70 limitée au nouveau lanceur ; SP-71 et CA-21 pour T-28 |
+| 3. Deux lanceurs « Mon tuteur » | le raccourci du bureau est écrasé (SP-70, T-25) ; question en section 7.2 |
+| 4. Chemin du profil incomplet | T-26 lit `journal` et `profil` de `config.toml` |
+| 5. `session_id` copié | suppression après copie (SP-64) |
+| 6. `code_parent` | non porté, remplacé par le rôle `parent` (SP-25) |
+| 7. Répertoires sans défaut | SP-72 |
+| 8. Relecture de `enfants.json` | relecture sur changement de date (SP-4) |
+| 9. Clé du registre sans compte | risque et parade en section 7.1 |
