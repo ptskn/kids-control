@@ -6,7 +6,7 @@
     },
     "ExtensionSettings": {
       "*": {
-        "installation_mode": "blocked",
+        "allowed_types": ["locale"],
         "blocked_install_message": "Installing extensions is disabled on this computer."
       },
       "uBlock0@raymondhill.net": {
